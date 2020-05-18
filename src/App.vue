@@ -1,27 +1,77 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <v-header :seller="seller"></v-header>
+    <div class="tab-wrapper">
+      <tab :tabs="tabs" :seller="tabs"></tab>
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
+import Tab from 'components/tab/tab'
+import VHeader from 'components/header/header'
+import { getSeller } from 'api/index'
+import Seller from 'components/seller/seller'
+import Ratings from 'components/ratings/ratings'
+import Goods from 'components/goods/goods'
 export default {
   name: 'App',
+  data () {
+    return {
+      seller: { }
+    }
+  },
+  computed: {
+    tabs () {
+      return [
+        {
+          label: '商品',
+          component: Goods,
+          data: {
+            seller: this.seller
+          }
+        },
+        {
+          label: '评论',
+          component: Ratings,
+          data: {
+            seller: this.seller
+          }
+        },
+        {
+          label: '商家',
+          component: Seller,
+          data: {
+            seller: this.seller
+          }
+        }
+      ]
+    }
+  },
+  created () {
+    this._getSeller()
+  },
+  methods: {
+    _getSeller () {
+      getSeller().then((seller) => {
+        this.seller = seller
+      })
+    }
+  },
   components: {
-    HelloWorld
+    VHeader,
+    Tab
   }
 }
 </script>
 
-<style lang="stylus">
-#app
-  font-family Avenir, Helvetica, Arial, sans-serif
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
-  text-align center
-  color #2c3e50
-  margin-top 60px
+<style lang="stylus" scoped>
+  #app
+    .tab-wrapper
+      position: fixed
+      top: 136px
+      left: 0
+      right: 0
+      bottom: 0
 </style>
